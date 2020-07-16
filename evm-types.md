@@ -668,7 +668,7 @@ Storage/Memory Lookup
 ```
 
 ```{.k .symbolic}
-    rule #Ceil(#lookup( _ |-> VAL M, KEY )) => {(#Ceil(#lookup( M, KEY )) andBool isInt(VAL)) #Equals true}  [anywhere]
+    rule #Ceil(#lookup( _ |-> VAL M, KEY )) => true                                                          [anywhere]
     rule #Ceil(#lookup( .Map, _ ))          => true                                                          [anywhere]
 
     rule #Ceil(#lookupMemory( _ |-> VAL M, KEY )) => {(#Ceil(#lookupMemory( M, KEY )) andBool isInt(VAL)) #Equals true}  [anywhere]
