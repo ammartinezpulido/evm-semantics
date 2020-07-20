@@ -9,6 +9,13 @@ module LEMMAS
     rule #lookup ( M:Map [ K1 <- V1 ] , K2 ) => #lookup ( K1 |-> V1 , K1 ) requires K1 ==Int  K2 [simplification]
     rule #lookup ( M:Map [ K1 <- _  ] , K2 ) => #lookup ( M         , K2 ) requires K1 =/=Int K2 [simplification]
 
+    rule 0 <=Int #lookup( _M:Map , _ )             => true                                       [simplification]
+    rule         #lookup( _M:Map , _ ) <Int pow256 => true                                       [simplification, smt-lemma]
+
+    //Required for #Ceil(#buf)
+    rule 0 <=Int keccak( _ )             => true                                                 [simplification]
+    rule         keccak( _ ) <Int pow256 => true                                                 [simplification]
+
     rule WS ++ .ByteArray => WS  [simplification]
     rule .ByteArray ++ WS => WS  [simplification]
 
@@ -45,6 +52,12 @@ module LEMMAS
     rule          X >=Int Y  => Y <=Int X            [simplification]
     rule notBool (X  <Int Y) => Y <=Int X            [simplification]
     rule notBool (X <=Int Y) => Y  <Int X            [simplification]
+
+    // chop range & simplification
+    rule chop(I) => I requires #rangeUInt( 256 , I ) [simplification]
+    rule chop(bool2Word(B)) => bool2Word(B)          [simplification]
+    rule 0 <=Int chop(V)             => true         [simplification]
+    rule         chop(V) <Int pow256 => true         [simplification]
 
 endmodule
 
@@ -203,8 +216,6 @@ module LEMMAS-JAVA [symbolic, kast]
     rule bool2Word(A) =/=K 0 => A           [simplification]
     rule bool2Word(A) =/=K 1 => notBool(A)  [simplification]
 
-    rule chop(bool2Word(B)) => bool2Word(B)  [simplification]
-
     rule 0 <=Int X &Int Y             => true requires 0 <=Int X andBool X <Int pow256 andBool 0 <=Int Y andBool Y <Int pow256  [simplification]
     rule         X &Int Y <Int pow256 => true requires 0 <=Int X andBool X <Int pow256 andBool 0 <=Int Y andBool Y <Int pow256  [simplification]
 
@@ -217,17 +228,12 @@ module LEMMAS-JAVA [symbolic, kast]
     rule 0 <=Int hash2(_,_)             => true  [simplification]
     rule         hash2(_,_) <Int pow256 => true  [simplification]
 
-    rule 0 <=Int chop(V)             => true  [simplification]
-    rule         chop(V) <Int pow256 => true  [simplification]
-
     rule 0 <=Int keccakIntList(_)             => true  [simplification]
     rule         keccakIntList(_) <Int pow256 => true  [simplification]
 
     rule X <=Int maxUInt256 => X <Int pow256  [simplification]
     rule X <=Int maxUInt160 => X <Int pow160  [simplification]
     rule X <=Int 255        => X <Int 256     [simplification]
-
-    rule chop(I) => I requires 0 <=Int I andBool I <Int pow256  [simplification]
 
     //Simplification of bool2Word() ==Int CONCRETE, #buf() ==K CONCRETE
     rule I                   ==K bool2Word( B:Bool ) => bool2Word(B) ==Int I    requires #isConcrete(I)  [simplification]
@@ -243,6 +249,12 @@ module LEMMAS-HASKELL [symbolic, kore]
     imports INT-SYMBOLIC
     imports EVM
     imports EDSL
+
+    //Simplification of double negation in term constraint
+    //Simplifies { false #Equals B ==Bool false }, also `B ==Bool false ==Bool false`
+    //see https://github.com/kframework/kore/issues/1944#issuecomment-657733745
+    rule B ==Bool false    => notBool B                                                                  [simplification]
+    rule notBool notBool B => B                                                                          [simplification]
 
     rule (BUF1 ++ BUF2)[START .. WIDTH] => (BUF1[START .. #sizeByteArray(BUF1) -Int START]) ++ (BUF2[0 .. START +Int WIDTH -Int #sizeByteArray(BUF1)])
       requires #range(0 <= START < #sizeByteArray(BUF1))
@@ -267,6 +279,9 @@ module LEMMAS-HASKELL [symbolic, kore]
       requires #rangeUInt(160, N) [simplification]
 
     rule maxUInt160 &Int N => N
+      requires #rangeUInt(160, N) [simplification]
+
+    rule N modInt pow160 => N
       requires #rangeUInt(160, N) [simplification]
 
     rule #range(_, _, K) => .ByteArray requires notBool K >Int 0  [simplification]
