@@ -14,7 +14,7 @@ module OPEN-CDP-SPEC
           <output> _ => #padToWidth(32, #asByteStack(Cdpi +Int 1)) </output>
           <statusCode> _ => EVMC_SUCCESS </statusCode>
           <endPC> _ => ?_ </endPC>
-          <callStack> VCallStack </callStack>
+          <callStack> _VCallStack </callStack>
           <interimStates> _ </interimStates>
           <touchedAccounts> _ => ?_ </touchedAccounts>
           <callState>
@@ -34,7 +34,7 @@ module OPEN-CDP-SPEC
             <callDepth> VCallDepth </callDepth>
           </callState>
           <substate>
-            <selfDestruct> VSelfDestruct </selfDestruct>
+            <selfDestruct> _VSelfDestruct </selfDestruct>
             <log> _ => ?_ </log>
             <refund> _ => ?_ </refund>
           </substate>
@@ -50,7 +50,7 @@ module OPEN-CDP-SPEC
             <receiptsRoot> _ </receiptsRoot>
             <logsBloom> _ </logsBloom>
             <difficulty> _ </difficulty>
-            <number> BLOCK_NUMBER </number>
+            <number> _BLOCK_NUMBER </number>
             <gasLimit> _ </gasLimit>
             <gasUsed> _ </gasUsed>
             <timestamp> TIME </timestamp>
@@ -94,7 +94,7 @@ module OPEN-CDP-SPEC
               <code> Vat_bin_runtime </code>
               <storage> Vat_Storage => ?Vat_Storage </storage>
               <origStorage> Vat_OrigStorage </origStorage>
-              <nonce> Nonce_Vat => ?_ </nonce>
+              <nonce> _Nonce_Vat => ?_ </nonce>
             </account>
             <account>
               <acctID> ACCT_ID </acctID>
