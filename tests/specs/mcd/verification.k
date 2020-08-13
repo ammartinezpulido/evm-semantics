@@ -151,4 +151,7 @@ module VERIFICATION
     rule #range(_MAP [ KEY := BUF         ]       , START, WIDTH) => BUF [ 0 .. WIDTH ] requires KEY ==Int START andBool WIDTH <=Int #sizeByteArray(BUF)
     rule #range(MAP  [ KEY := _:ByteArray ] => MAP, START, WIDTH)                       requires START +Int WIDTH <=Int KEY
 
+    rule #computeValidJumpDests(#padToWidth(32, #asByteStack(ADDR)) => .ByteArray, I => I +Int 32, _RESULT) requires 0 <=Int ADDR andBool ADDR <Int pow256
+    rule #computeValidJumpDests(#buf(32, BUF)                       => .ByteArray, I => I +Int 32, _RESULT) requires 0 <=Int  BUF andBool  BUF <Int pow256
+
 endmodule
