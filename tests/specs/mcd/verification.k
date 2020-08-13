@@ -136,4 +136,21 @@ module VERIFICATION
     rule #range(BUF:Memory [ N <- _           ], KEY, WIDTH) => #range(BUF, KEY, WIDTH) requires KEY +Int WIDTH <=Int N
     rule #range(BUF:Memory [ N := _:ByteArray ], KEY, WIDTH) => #range(BUF, KEY, WIDTH) requires KEY +Int WIDTH <=Int N
 
+    // ### open-cdp
+
+    rule #asWord(#padToWidth(32, #asByteStack(VALUE))) => VALUE requires 0 <=Int VALUE andBool VALUE <Int pow256
+
+    rule #unsigned(#sizeWordStack(WS, N) +Int M) => #sizeWordStack(WS, N) +Int M requires 0 <=Int M andBool #sizeWordStack(WS, N) +Int M <Int maxSInt256
+
+    rule hash2(_, _)        ==K 1                     => false
+    rule hash2(_, _) +Int I ==K 1                     => false requires I =/=Int 0
+    rule hash2(_, 5)        ==K hash2(_, hash2(_, _)) => false
+    rule #newAddr(_, _)     ==K 0                     => false
+    rule 1                  ==K hash2(_, _)           => false
+    rule hash2(_, _) +Int I ==K hash2(_, _)           => false requires I =/=Int 0
+
+    rule #range(MAP  [ KEY <- _           ] => MAP, START, WIDTH)                       requires START +Int WIDTH <=Int KEY
+    rule #range(_MAP [ KEY := BUF         ]       , START, WIDTH) => BUF [ 0 .. WIDTH ] requires KEY ==Int START andBool WIDTH <=Int #sizeByteArray(BUF)
+    rule #range(MAP  [ KEY := _:ByteArray ] => MAP, START, WIDTH)                       requires START +Int WIDTH <=Int KEY
+
 endmodule
