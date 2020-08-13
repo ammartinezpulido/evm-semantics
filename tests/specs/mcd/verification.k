@@ -142,12 +142,10 @@ module VERIFICATION
 
     rule #unsigned(#sizeWordStack(WS, N) +Int M) => #sizeWordStack(WS, N) +Int M requires 0 <=Int M andBool #sizeWordStack(WS, N) +Int M <Int maxSInt256
 
-    rule hash2(_, _)        ==K 1                     => false
-    rule hash2(_, _) +Int I ==K 1                     => false requires I =/=Int 0
-    rule hash2(_, 5)        ==K hash2(_, hash2(_, _)) => false
-    rule #newAddr(_, _)     ==K 0                     => false
-    rule 1                  ==K hash2(_, _)           => false
-    rule hash2(_, _) +Int I ==K hash2(_, _)           => false requires I =/=Int 0
+    rule hash2(_, 5)    ==K hash2(_, hash2(_, _)) => false
+    rule #newAddr(_, _) ==K 0                     => false
+    rule hash2(_, V1)   ==K hash2(_, V2)          => false requires V1 =/=Int V2
+    rule 1              ==K hash2(_, _)           => false
 
     rule #range(MAP  [ KEY <- _           ] => MAP, START, WIDTH)                       requires START +Int WIDTH <=Int KEY
     rule #range(_MAP [ KEY := BUF         ]       , START, WIDTH) => BUF [ 0 .. WIDTH ] requires KEY ==Int START andBool WIDTH <=Int #sizeByteArray(BUF)
