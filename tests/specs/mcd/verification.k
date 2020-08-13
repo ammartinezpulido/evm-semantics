@@ -138,20 +138,12 @@ module VERIFICATION
 
     // ### open-cdp
 
-    rule #asWord(#padToWidth(32, #asByteStack(VALUE))) => VALUE requires 0 <=Int VALUE andBool VALUE <Int pow256
+    rule #computeValidJumpDests(#buf(32, BUF) => .ByteArray, I => I +Int 32, _RESULT) requires 0 <=Int  BUF andBool  BUF <Int pow256
 
-    rule #unsigned(#sizeWordStack(WS, N) +Int M) => #sizeWordStack(WS, N) +Int M requires 0 <=Int M andBool #sizeWordStack(WS, N) +Int M <Int maxSInt256
+    rule I in (SetItem(I') REST) => I in REST requires I =/=Int I'
 
-    rule hash2(_, 5)    ==K hash2(_, hash2(_, _)) => false
-    rule #newAddr(_, _) ==K 0                     => false
-    rule hash2(_, V1)   ==K hash2(_, V2)          => false requires V1 =/=Int V2
-    rule 1              ==K hash2(_, _)           => false
-
-    rule #range(MAP  [ KEY <- _           ] => MAP, START, WIDTH)                       requires START +Int WIDTH <=Int KEY
-    rule #range(_MAP [ KEY := BUF         ]       , START, WIDTH) => BUF [ 0 .. WIDTH ] requires KEY ==Int START andBool WIDTH <=Int #sizeByteArray(BUF)
-    rule #range(MAP  [ KEY := _:ByteArray ] => MAP, START, WIDTH)                       requires START +Int WIDTH <=Int KEY
-
-    rule #computeValidJumpDests(#padToWidth(32, #asByteStack(ADDR)) => .ByteArray, I => I +Int 32, _RESULT) requires 0 <=Int ADDR andBool ADDR <Int pow256
-    rule #computeValidJumpDests(#buf(32, BUF)                       => .ByteArray, I => I +Int 32, _RESULT) requires 0 <=Int  BUF andBool  BUF <Int pow256
+    rule #newAddr(_, _) ==K 0            => false
+    rule hash2(_, V1)   ==K hash2(_, V2) => false requires V1 =/=Int V2
+    rule 1              ==K hash2(_, _)  => false
 
 endmodule
