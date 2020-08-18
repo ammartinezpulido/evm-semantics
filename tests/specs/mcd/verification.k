@@ -63,6 +63,9 @@ module VERIFICATION-SYNTAX
     rule nthbyteof(V, I, N) => nthbyteof(V /Int 256, I, N -Int 1) when N  >Int (I +Int 1) [concrete]
     rule nthbyteof(V, I, N) =>           V modInt 256             when N ==Int (I +Int 1) [concrete]
 
+    syntax Int ::= #symEcrec ( Int , Int , Int , Int ) [function]
+ // -------------------------------------------------------------
+
 endmodule
 
 module VERIFICATION
