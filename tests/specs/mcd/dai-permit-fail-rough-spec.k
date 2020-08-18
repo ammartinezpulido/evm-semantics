@@ -195,7 +195,7 @@ module DAI-PERMIT-FAIL-ROUGH-SPEC
      andBool (#rangeAddress(ABI_ombudsman)
      andBool (#rangeUInt(256, ABI_n)
      andBool (#rangeUInt(256, ABI_ttl)
-     andBool (#rangeUInt(1, ABI_may)
+     andBool (#rangeBool(ABI_may)
      andBool (#rangeUInt(8, ABI_v)
      andBool (#rangeBytes(32, ABI_r)
      andBool (#rangeBytes(32, ABI_s)
