@@ -126,4 +126,11 @@ module VERIFICATION
     rule X ==Int #WordPackUInt48UInt48(Y, Z) => (maxUInt48 &Int X ==Int Y) andBool (maxUInt48 &Int (X /Int pow48) ==Int Z)
       requires #rangeUInt(48, Y) andBool #rangeUInt(48, Z)
 
+    // ### dai-permit-fail-rough
+
+    rule notBool (notBool B) => B
+
+    rule #range(BUF:Memory [ N <- _           ], KEY, WIDTH) => #range(BUF, KEY, WIDTH) requires KEY +Int WIDTH <=Int N
+    rule #range(BUF:Memory [ N := _:ByteArray ], KEY, WIDTH) => #range(BUF, KEY, WIDTH) requires KEY +Int WIDTH <=Int N
+
 endmodule
