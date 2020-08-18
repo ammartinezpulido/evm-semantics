@@ -77,20 +77,8 @@ module DAI-PERMIT-FAIL-ROUGH-SPEC
               <acctID> ACCT_ID </acctID>
               <balance> ACCT_ID_balance </balance>
               <code> Dai_bin_runtime </code>
-              <storage>
-               .Map
-              [#Dai.nonces[ABI_hodler] <- (Nonce) => ?_]
-              [#Dai.DOMAIN_SEPARATOR <- (Domain_separator) => ?_]
-              [#Dai.allowance[ABI_hodler][ABI_ombudsman] <- (Allowed) => ?_]
-                _:Map
-               </storage>
-              <origStorage>
-               .Map
-              [#Dai.nonces[ABI_hodler] <- (Junk_0)]
-              [#Dai.DOMAIN_SEPARATOR <- (Junk_1)]
-              [#Dai.allowance[ABI_hodler][ABI_ombudsman] <- (Junk_2)]
-                _:Map
-               </origStorage>
+              <storage> STORAGE </storage>
+              <origStorage> ORIGSTORAGE </origStorage>
               <nonce> Nonce_Dai => ?_ </nonce>
             </account>
             <account>
@@ -215,6 +203,14 @@ module DAI-PERMIT-FAIL-ROUGH-SPEC
                andBool ((ABI_n:Int ==Int Nonce:Int)
                andBool ((VCallDepth:Int <Int 1024)))))))
                      )
+
+     andBool #lookup(STORAGE, #Dai.nonces[ABI_hodler]                  ) ==Int Nonce
+     andBool #lookup(STORAGE, #Dai.DOMAIN_SEPARATOR                    ) ==Int Domain_separator
+     andBool #lookup(STORAGE, #Dai.allowance[ABI_hodler][ABI_ombudsman]) ==Int Allowed
+
+     andBool #lookup(ORIGSTORAGE, #Dai.nonces[ABI_hodler]                  ) ==Int Junk_0
+     andBool #lookup(ORIGSTORAGE, #Dai.DOMAIN_SEPARATOR                    ) ==Int Junk_1
+     andBool #lookup(ORIGSTORAGE, #Dai.allowance[ABI_hodler][ABI_ombudsman]) ==Int Junk_2
 
      ensures ?FAILURE =/=K EVMC_SUCCESS
 
