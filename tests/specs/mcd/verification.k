@@ -148,6 +148,22 @@ module VERIFICATION
     rule #range(BUF:Memory [ N <- _           ], KEY, WIDTH) => #range(BUF, KEY, WIDTH) requires KEY +Int WIDTH <=Int N
     rule #range(BUF:Memory [ N := _:ByteArray ], KEY, WIDTH) => #range(BUF, KEY, WIDTH) requires KEY +Int WIDTH <=Int N
 
+    // ### jug-rpow-loop-pass
+
+    rule num0(N /Int 2) => num0(N) -Int 1 requires N >=Int 1 andBool N modInt 2 ==Int 0
+    rule num1(N /Int 2) => num1(N) -Int 1 requires N  >Int 1 andBool N modInt 2 ==Int 1
+
+    rule num0(N /Int 2) => num0(N) requires N >=Int 1 andBool N modInt 2 ==Int 1
+    rule num1(N /Int 2) => num1(N) requires N  >Int 1 andBool N modInt 2 ==Int 0
+
+    rule num0(N) >=Int 0 => num0(N) >=Int 1 requires N >=Int 1 andBool N modInt 2 ==Int 0
+    rule num1(N) >=Int 0 => num1(N) >=Int 1 requires N  >Int 1 andBool N modInt 2 ==Int 1
+
+    rule #rpow( ((Z *Int X) +Int Half) /Int Base , X                                , N /Int 2 , Base ) => #rpow( Z    , X , N , Base ) requires Half ==Int Base /Int 2 andBool N ==Int 1
+    rule #rpow( ((Z *Int X) +Int Half) /Int Base , ((X *Int X) +Int Half) /Int Base , N /Int 2 , Base ) => #rpow( Z    , X , N , Base ) requires N modInt 2 ==Int 1 andBool N >=Int 2 andBool Half ==Int Base /Int 2
+    rule #rpow( Z                                , ((X *Int X) +Int Half) /Int Base , N /Int 2 , Base ) => #rpow( Z    , X , N , Base ) requires N modInt 2 ==Int 0 andBool N >=Int 2 andBool Half ==Int Base /Int 2
+    rule #rpow( X                                , ((X *Int X) +Int Half) /Int Base , N /Int 2 , Base ) => #rpow( Base , X , N , Base ) requires N modInt 2 ==Int 1 andBool N /Int 2 =/=Int 0 andBool Half ==Int Base /Int 2
+
     // ### open-cdp
 
     rule #computeValidJumpDests(#buf(32, BUF) => .ByteArray, I => I +Int 32, _RESULT) requires 0 <=Int  BUF andBool  BUF <Int pow256
