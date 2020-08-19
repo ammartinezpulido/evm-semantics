@@ -66,6 +66,18 @@ module VERIFICATION-SYNTAX
     syntax Int ::= #symEcrec ( Int , Int , Int , Int ) [function]
  // -------------------------------------------------------------
 
+    syntax Int ::= num0 ( Int )                    [function, smtlib(smt_num0)]
+                 | num1 ( Int )                    [function, smtlib(smt_num1)]
+                 | #rpow ( Int , Int , Int , Int ) [function, smtlib(smt_rpow)] // smt-prelude
+ // ---------------------------------------------------------------------------
+    rule num0(N) => 0 requires N ==Int 1
+    rule num1(N) => 0 requires N ==Int 1
+
+    rule #rpow( Z,   _X, 0, _Base) => Z
+    rule #rpow( Z,   _X, N, _Base) => Z requires N modInt 2 ==Int 0 andBool N /Int 2 ==Int 0
+    rule #rpow(_Z,    0, N, _Base) => 0 requires N =/=Int 0
+    rule #rpow(Base,  X, N,  Base) => X requires N ==Int 1
+
 endmodule
 
 module VERIFICATION
