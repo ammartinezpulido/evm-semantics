@@ -77,7 +77,7 @@ module DAI-PERMIT-FAIL-ROUGH-SPEC
               <acctID> ACCT_ID </acctID>
               <balance> ACCT_ID_balance </balance>
               <code> Dai_bin_runtime </code>
-              <storage> STORAGE </storage>
+              <storage> STORAGE => ?_STORAGE </storage>
               <origStorage> ORIGSTORAGE </origStorage>
               <nonce> Nonce_Dai => ?_ </nonce>
             </account>
