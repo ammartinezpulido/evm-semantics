@@ -131,7 +131,7 @@ module VERIFICATION
     rule notBool (notBool B) => B
 
     // HACK
-    rule #sizeByteArray(#ecrec(ACCT)) => 32 // requires ACCT =/=K .Account
+    rule #sizeByteArray(#ecrec(_ACCT)) => 32 // requires ACCT =/=K .Account
 
     rule #range(BUF:Memory [ N <- _           ], KEY, WIDTH) => #range(BUF, KEY, WIDTH) requires KEY +Int WIDTH <=Int N
     rule #range(BUF:Memory [ N := _:ByteArray ], KEY, WIDTH) => #range(BUF, KEY, WIDTH) requires KEY +Int WIDTH <=Int N
