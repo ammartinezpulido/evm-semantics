@@ -200,9 +200,12 @@ module DAI-PERMIT-FAIL-ROUGH-SPEC
                andBool ((ABI_hodler:Int ==Int #symEcrec(keccakIntList(#asWord(#parseHexWord("0x19") : #parseHexWord("0x01") : .WordStack) Domain_separator:Int keccakIntList(keccak(#parseByteStackRaw("Permit(address holder,address spender,uint256 nonce,uint256 expiry,bool allowed)")) ABI_hodler:Int ABI_ombudsman:Int ABI_n:Int ABI_ttl:Int ABI_may:Int)), ABI_v:Int, ABI_r:Int, ABI_s:Int))
                andBool ((ABI_ttl:Int ==Int 0 orBool TIME:Int <=Int ABI_ttl:Int)
                andBool ((VCallValue:Int ==Int 0)
-               andBool ((ABI_n:Int ==Int Nonce:Int)
+               andBool ((ABI_n:Int ==Int Nonce:Int) // from this line of Solidity: require(nonce == nonces[holder]++, "Dai/invalid-nonce");
                andBool ((VCallDepth:Int <Int 1024)))))))
                      )
+
+     // **HACK** to check if proof goes through ignoring this case.
+     andBool ABI_n =/=Int Nonce // ==Int #lookup(STORAGE, #Dai.nonces[ABI_hodler])
 
      andBool #lookup(STORAGE, #Dai.nonces[ABI_hodler]                  ) ==Int Nonce
      andBool #lookup(STORAGE, #Dai.DOMAIN_SEPARATOR                    ) ==Int Domain_separator
